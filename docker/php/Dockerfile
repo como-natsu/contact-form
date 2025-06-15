@@ -10,4 +10,19 @@ RUN curl -sS https://getcomposer.org/installer | php \
   && mv composer.phar /usr/local/bin/composer \
   && composer self-update
 
+
+# UID/GID を受け取る
+ARG UID=1000
+ARG GID=1000
+
+# group と user を作成
+RUN groupadd -g ${GID} appgroup \
+  && useradd -m -u ${UID} -g ${GID} appuser
+
+# 所有権を変更（必要なら）
+RUN chown -R appuser:appgroup /var/www
+
+# デフォルトのユーザーを変更
+USER appuser
+
 WORKDIR /var/www
